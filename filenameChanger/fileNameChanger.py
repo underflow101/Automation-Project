@@ -1,5 +1,11 @@
 import os
 
-for i in range(20000):
-    os.rename(r'/home/bearpaek/data/datasets/lpl/writing/*.jpg', \
-              r'/home/bearpaek/data/datasets/lpl/writing/{}.jpg'.format(i))
+i = 0
+
+for filename in os.listdir("/home/bearpaek/data/datasets/lpl/writing/"): 
+    dst = str(i) + ".jpg"
+    src = '/home/bearpaek/data/datasets/lpl/writing/' + filename 
+    dst = '/home/bearpaek/data/datasets/lpl/writing/' + dst 
+    
+    os.rename(src, dst) 
+    i += 1
