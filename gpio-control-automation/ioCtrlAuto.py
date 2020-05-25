@@ -14,7 +14,7 @@ for i in range(128):
     print(i, end='')
     print("/value")
     
-    while 1:
+    while True:
         key = input().strip()
 
         if key == 'q':
