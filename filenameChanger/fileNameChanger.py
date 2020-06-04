@@ -1,3 +1,5 @@
+# Use this template for changing filenames
+
 import os
 
 i = 0
