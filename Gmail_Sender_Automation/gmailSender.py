@@ -5,21 +5,25 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import smtplib
 
-# Google의 Gmail 같은 경우 아래의 STMP 설정을 그대로 쓰면 됩니다. 포트 번호도 바꿀 필요 없습니다.
-# 이는 Google에서 설정한 것이므로 gmail, 혹은 gsuite 기준 그대로 쓰면 됩니다.
-# 단, 회사 메일이나 네이버, 다음 같은 경우 다르므로 SMTP 서버에 대해 알아보는 게 좋습니다.
-# 더 자세한 정보는 각 홈페이지에서 SMTP를 검색해주세요.
+'''
+Google의 Gmail 같은 경우 아래의 STMP 설정을 그대로 쓰면 됩니다. 포트 번호도 바꿀 필요 없습니다.
+이는 Google에서 설정한 것이므로 gmail, 혹은 gsuite 기준 그대로 쓰면 됩니다.
+단, 회사 메일이나 네이버, 다음 같은 경우 다르므로 SMTP 서버에 대해 알아보는 게 좋습니다.
+더 자세한 정보는 각 홈페이지에서 SMTP를 검색해주세요.
 
-# Gmail 같은 경우 해당 코드가 바로는 돌아가지 않습니다. 경고창에 뜨는 google의 URL로 들어가서
-# "보안 수준이 낮은 앱 허용"을 "활성화"로 바꿔주셔야 합니다.
-# "보안 수준이 낮은 앱 허용"의 기본 상태는 "비활성화"입니다.
-# 해당 상태를 바꾸지 않으면 코드 실행에 에러가 발생합니다.
+Gmail 같은 경우 해당 코드가 바로는 돌아가지 않습니다. 경고창에 뜨는 google의 URL로 들어가서
+"보안 수준이 낮은 앱 허용"을 "활성화"로 바꿔주셔야 합니다.
+"보안 수준이 낮은 앱 허용"의 기본 상태는 "비활성화"입니다.
+해당 상태를 바꾸지 않으면 코드 실행에 에러가 발생합니다.
+'''
 
 SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 465
+
 # 보내는 메일 계정
 SMTP_USER = "보내는 사람 메일 계정"
 SMTP_PASSWORD = "보내는 사람 메일 비밀번호"
+
 # 만약 아래 메일 유효성 검사 함수에서 False가 나오면 메일을 보내지 않습니다.
 def is_valid(addr):
     import re
@@ -27,6 +31,7 @@ def is_valid(addr):
         return True
     else:
         return False
+
 # 이메일 보내기 함수
 def send_mail(addr, subj_layout, cont_layout, attachment=None):
     if not is_valid(addr):
@@ -35,6 +40,7 @@ def send_mail(addr, subj_layout, cont_layout, attachment=None):
     
     # 텍스트 파일
     msg = MIMEMultipart("alternative")
+    
     # 첨부파일이 있는 경우 mixed로 multipart 생성
     if attachment:
         msg = MIMEMultipart('mixed')
@@ -51,16 +57,22 @@ def send_mail(addr, subj_layout, cont_layout, attachment=None):
         file_data = MIMEBase("application", "octect-stream")
         file_data.set_payload(open(attachment, "rb").read())
         encoders.encode_base64(file_data)
+        
         import os
+        
         filename = os.path.basename(attachment)
         file_data.add_header("Content-Disposition", 'attachment', filename=('UTF-8', '', filename))
         msg.attach(file_data)
+        
     # smtp로 접속할 서버 정보를 가진 클래스변수 생성
     smtp = smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT)
+    
     # 해당 서버로 로그인
     smtp.login(SMTP_USER, SMTP_PASSWORD)
+    
     # 메일 발송
     smtp.sendmail(SMTP_USER, addr, msg.as_string())
+    
     # 닫기
     smtp.close()
 
